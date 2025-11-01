@@ -1,8 +1,12 @@
 ---
-import '../styles/global.css'
+import '../styles/global.css';
+import '@fontsource/spectral';
+import '@fontsource/spectral/400.css';
+import spectral400Url from '@fontsource/spectral/files/spectral-latin-400-normal.woff2?url';
+
 
 const {
-  title = "Your Name – Portfolio",
+  title = "Welserver – Portfolio",
   description = "Software engineer portfolio and projects.",
 } = Astro.props;
 ---
@@ -23,17 +27,19 @@ const {
 
     <!-- Fonts (optional; swap for no FOIT) -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href={spectral400Url} as="font" type="font/woff2" crossorigin>
+
     <!-- Example: Inter via system UI fallback -->
     <style>
       :root { --pad: clamp(1rem, 2vw, 2rem); }
-      html { color-scheme: light dark }
-      body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif; }
+      html { color-scheme: light }
+      body { margin: 0; } /* (old) font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif; */
     </style>
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen font-[Spectral]">
     <header class="px-(--pad) py-4">
       <nav class="max-w-5xl mx-auto flex items-center justify-between">
-        <a href="/" class="font-semibold">YourName</a>
+        <a href="/" class="font-semibold">Welserver</a>
         <div class="flex gap-6 text-sm opacity-80">
           <a href="/projects/">Projects</a>
           <a href="/about/">About</a>
@@ -48,7 +54,7 @@ const {
     </main>
 
     <footer class="px-(--pad) py-10 opacity-70 text-sm">
-      <div class="max-w-5xl mx-auto">© {new Date().getFullYear()} Your Name</div>
+      <div class="max-w-5xl mx-auto">© {new Date().getFullYear()} Welserver</div>
     </footer>
   </body>
 </html>
