@@ -1,8 +1,8 @@
 ---
-
+import Layout from "../layouts/Layout.astro";
 ---
 
-<html lang="en">
+<!-- <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -13,4 +13,25 @@
 	<body>
 		<h1>Astro</h1>
 	</body>
-</html>
+</html> -->
+
+<Layout title="Your Name – Portfolio" description="Engineer. Builder. Writer.">
+	<section class="py-20">
+		<h1 class="text-4xl md:text-6xl font-bold tracking-tight">
+		Hi, I’m <span class="underline underline-offset-4">Your Name</span>.
+		</h1>
+		<p class="mt-4 max-w-prose leading-relaxed text-balance">
+		I build things with Java/Spring, React/TypeScript, and Python. This site is a
+		styling playground right now; projects and notes incoming.
+		</p>
+
+		<div class="mt-10 flex gap-4">
+		<a href="/projects/" class="px-5 py-2 rounded-xl border">
+			View Projects
+		</a>
+		<a href="/about/" class="px-5 py-2 rounded-xl border">
+			About Me
+		</a>
+		</div>
+	</section>
+</Layout>
