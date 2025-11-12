@@ -4,6 +4,46 @@ import '@fontsource/spectral';
 import '@fontsource/spectral/400.css';
 import spectral400Url from '@fontsource/spectral/files/spectral-latin-400-normal.woff2?url';
 
+// 1st pass (canvas 2d):
+// points generated in a grid, perlin noise clouds affect point alpha channels
+// import { ParticleCloudBackground } from "../components/Canvas.tsx";
+
+// 2nd pass (canvas 2d):
+// static pixel-sized particles generated once, but not in a grid so you can start to see the vision
+// import { ThreeParticleBackground } from "../components/ThreeParticleBackground";
+
+// 3rd pass (canvas 2d):
+// honestly, a miss: vibe-coded garbage that more closely resembles 1st pass
+// import { ProceduralPixelBackground } from '../components/ProceduralPixelBackground';
+
+// 4th pass (the rest are threejs):
+// finally getting somewhere. Looks like tv static, but now we have dynamically generating pixels
+// import StaticNoise from '../components/StaticNoise';
+
+// 5th pass:
+// + particles are generated based on perlin noise, 
+// - but noise field is static,
+// - color is off,
+// - and dots are blurry (aliasing due in part to threejs color processing)
+// import StaticNoiseField from '../components/StaticNoiseField_old_1.tsx'; 
+
+// 6th pass:
+// + noise is now dynamic,
+// - but has banding
+// - other problems still present
+// import StaticNoiseField from '../components/StaticNoiseField_old_2.tsx';
+
+// 7th pass:
+// + fixed banding
+// - other problems still present
+// import StaticNoiseField from '../components/StaticNoiseField_old_3.tsx';
+
+// 8th pass (final):
+// + color fix attempt did not fix color, but fixed pixel resolution (was a resolution fix for the canvas)
+// + color finally fixed by gamma correction in the shader
+import StaticNoiseField from '../components/StaticNoiseField';
+
+
 
 const {
   title = "Welserver – Portfolio",
@@ -37,17 +77,83 @@ const {
     </style>
   </head>
   <body class="min-h-screen font-[Spectral]">
-    <header class="px-(--pad) py-4">
+    <div class="fixed -z-10">
+      <!-- <ParticleCloudBackground client:load backgroundColor="white" particleColor="#EF476F"/> -->
+       <!-- <ThreeParticleBackground client:load backgroundColor="white" particleColor="#bae756"/> -->
+       <!-- <ThreeParticleBackground client:load backgroundColor="white" particleColor="black"/> -->
+       <!-- <ProceduralPixelBackground client:load backgroundColor="white" pointColor="black" density=40.0 radius=.09 /> -->
+      <!-- <StaticNoise
+        client:load
+        foregroundColor="white"
+        backgroundColor="black"
+        speed={.00001}
+        threshold={0.1}
+      /> -->
+      <!-- <StaticNoiseField
+        client:load
+        foregroundColor="#BCE1BE"
+        backgroundColor="black"
+        maxProbability={0.8}
+        minProbability={0.0}
+        noiseScale={9}
+        fieldSpeed={0.2}
+        width="100vw"
+        height="100vh"
+      /> -->
+      <!-- <StaticNoiseField
+        client:load
+        foregroundColor="#BCE1BE"
+        backgroundColor="black"
+        maxProbabilityPeak={1}
+        minProbabilityPeak={0}
+        maxProbabilityTrough={0}
+        noiseScale={.6}
+        fieldSpeed={0.1}
+        width="100vw"
+        height="100vh"
+      /> -->
+      <StaticNoiseField
+        client:load
+        foregroundColor="#D19DDA"
+        foregroundColor="#26C5D9"
+        foregroundColor="#BCE1BE"
+        foregroundColor="#71D186"
+        foregroundColor="black"
+        foregroundColor="#e0cccc"
+        foregroundColor="#968383"
+        foregroundColor="#423a3a"
+        foregroundColor="#302a2a"
+        foregroundColor="#26C5D9"
+        foregroundColor="#EF486F"
+        foregroundColor="#FFBA00"
+        foregroundColor="#F88D04"
+        foregroundColor="#BCE1BE"
+        foregroundColor="#75D78A"
+        foregroundColor="#449e94"
+        foregroundColor="#BBDDFA"
+        foregroundColor="black"
+        backgroundColor="black"
+        backgroundColor="white"
+        maxProbabilityPeak={1}
+        minProbabilityPeak={0}
+        maxProbabilityTrough={0}
+        noiseScale={.6}
+        fieldSpeed={.05}
+        width="100vw"
+        height="100vh"
+      />
+    </div>
+    <header class="px-(--pad) py-4 bg-white">
       <nav class="max-w-5xl mx-auto flex items-center justify-between">
         <a href="/" class="font-semibold">Welserver</a>
-        <div class="flex gap-6 text-sm opacity-80">
+        <div class="flex gap-6 text-sm">
           <a href="/projects/">Projects</a>
           <a href="/about/">About</a>
         </div>
       </nav>
     </header>
 
-    <main class="px-(--pad)">
+    <main class="px-(--pad) relative">
       <div class="max-w-5xl mx-auto">
         <slot />
       </div>

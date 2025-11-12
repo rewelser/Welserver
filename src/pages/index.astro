@@ -1,5 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ScrollGraphic from "../components/ScrollGraphic.tsx";
+import ScrollRevealSection from "../components/ScrollRevealSection.tsx";
+import TwoUp from "../components/TwoUp.astro";
+import ScrollInGraphic from "../components/ScrollInGraphic.tsx";
+// import ScrollInGraphic from "../components/ScrollInGraphic.astro";
+
 ---
 
 <!-- <html lang="en">
@@ -16,15 +22,18 @@ import Layout from "../layouts/Layout.astro";
 </html> -->
 
 <Layout title="Evan Welser – Portfolio" description="Engineer. Builder. Writer.">
-	<section class="py-20">
-		<h1 class="text-4xl md:text-6xl font-bold tracking-tight">
-		Hi, I’m <span class="underline underline-offset-4">Evan Welser</span>.
-		</h1>
-		<p class="mt-4 max-w-prose leading-relaxed text-balance">
-		I build things with Java/Spring, React/TypeScript, and Python. This site is a
-		styling playground right now; projects and notes incoming.
-		</p>
-
+	<!-- <section class="py-20"> -->
+	<section class="">
+		<div class="bg-white">
+			<h1 class="text-2xl md:text-8xl font-bold tracking-tight mix-blend-difference text-white">
+			Hi, I’m <span class="underline underline-offset-4">Evan Welser</span>.
+			</h1>
+			<p class="mt-4 max-w-prose leading-relaxed text-balance">
+			I build things with Java/Spring, React/TypeScript, and Python. This site is a
+			styling playground right now; projects and notes incoming.
+			</p>
+		</div>
+		<div class="h-100 w-100vw bg-linear-to-b from-white to-transparent"></div>
 		<div class="mt-10 flex gap-4">
 		<a href="/projects/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#FFBA00] border border-[#FFBA00]">
 			View Projects
@@ -39,5 +48,100 @@ import Layout from "../layouts/Layout.astro";
 			Something even elser (coming soon)
 		</a>
 		</div>
+		<!-- <div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div> -->
+		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<!-- <ScrollGraphic
+			client:load
+			graphicSrc="/graphics/sticker.svg"
+			alt="Fun sticker"
+			>
+			<h2 class="text-3xl font-bold mb-4">Why our thing matters</h2>
+			<p class="text-slate-700 leading-relaxed">
+				This is a portfolio blurb. Make it long so you can scroll. Lorem ipsum
+				dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi
+				tristique senectus et netus et malesuada fames ac turpis egestas.
+			</p>
+		</ScrollGraphic> -->
+		<div class="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-gray-100 rounded-xl">
+			<!-- Left element (could be text, image, etc.) -->
+			<div class="flex-1 bg-white p-4 rounded-lg shadow">
+				<h2 class="text-xl font-semibold mb-2">Left Content</h2>
+				<p class="text-gray-700">
+				This could be text, an image, or any other media element.
+				</p>
+			</div>
+
+			<!-- Right element (could be text, image, etc.) -->
+			<div class="flex-1 bg-white p-4 rounded-lg shadow">
+				<h2 class="text-xl font-semibold mb-2">Right Content</h2>
+				<p class="text-gray-700">
+				On small screens, this block will stack below the first one.
+				</p>
+			</div>
+		</div>
+		<!-- <TwoUp class="bg-gray-100 p-6 rounded-xl">
+			<Fragment slot="left">
+				<h2 class="text-xl font-semibold mb-2">Left Content</h2>
+				<p class="text-gray-700">Some text or even a React island later.</p>
+			</Fragment>
+
+			<Fragment slot="right">
+				<h2 class="text-xl font-semibold mb-2">Right Content</h2>
+				<p class="text-gray-700">This one could be an image, list, whatever.</p>
+			</Fragment>
+		</TwoUp> -->
+		<TwoUp class="bg-gray-100 p-6 rounded-xl">
+
+
+			<Fragment slot="left">
+				<!-- <ScrollInGraphic startOffsetPct={300}>
+				{/* this can be any graphic, e.g. an inline SVG */}
+				<div class="w-40 h-40 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+					SVG / Graphic
+				</div>
+				</ScrollInGraphic> -->
+				<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
+			</Fragment>
+			<Fragment slot="right">
+				<h2 class="text-xl font-semibold mb-2">Some text block</h2>
+				<p class="text-gray-700">
+				This is the text side.
+				</p>
+			</Fragment>
+		</TwoUp>
+		<!-- <ScrollRevealSection
+		client:load
+		graphicSrc="/graphics/sticker.svg">
+		<h2 class="text-3xl font-bold mb-4">Scroll-linked section</h2>
+		<p class="text-slate-700 leading-relaxed">
+			This text stays where it is, the graphic lives beside it, and the graphic
+			scrolls in proportionally.
+		</p>
+		</ScrollRevealSection> -->
+		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<!-- <div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div>
+		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
+			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+		</div> -->
 	</section>
 </Layout>

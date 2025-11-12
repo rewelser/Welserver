@@ -1,0 +1,12 @@
+---
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`flex flex-col sm:flex-row items-center justify-between gap-6 ${className}`}>
+  <div class="flex-1">
+    <slot name="left" />
+  </div>
+  <div class="flex-1">
+    <slot name="right" />
+  </div>
+</div>
