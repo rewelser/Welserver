@@ -1,147 +1,106 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ScrollGraphic from "../components/ScrollGraphic.tsx";
-import ScrollRevealSection from "../components/ScrollRevealSection.tsx";
 import TwoUp from "../components/TwoUp.astro";
 import ScrollInGraphic from "../components/ScrollInGraphic.tsx";
-// import ScrollInGraphic from "../components/ScrollInGraphic.astro";
-
+import PerlishPointClouds from '../components/PerlishPointClouds';
 ---
 
-<!-- <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html> -->
-
 <Layout title="Evan Welser – Portfolio" description="Engineer. Builder. Writer.">
-	<!-- <section class="py-20"> -->
-	<section class="">
-		<div class="bg-white">
-			<h1 class="text-2xl md:text-8xl font-bold tracking-tight mix-blend-difference text-white">
+	<section id="hero" class="py-20 px-(--pad) bg-white">
+		<div class="max-w-5xl mx-auto">
+			<h1 class="text-2xl md:text-8xl font-bold tracking-tight [text-shadow:1px_1px_0_#fff,-1px_1px_0_#fff,1px_-1px_0_#fff,-1px_-1px_0_#fff]">
 			Hi, I’m <span class="underline underline-offset-4">Evan Welser</span>.
 			</h1>
 			<p class="mt-4 max-w-prose leading-relaxed text-balance">
 			I build things with Java/Spring, React/TypeScript, and Python. This site is a
 			styling playground right now; projects and notes incoming.
 			</p>
-		</div>
-		<div class="h-100 w-100vw bg-linear-to-b from-white to-transparent"></div>
-		<div class="mt-10 flex gap-4">
-		<a href="/projects/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#FFBA00] border border-[#FFBA00]">
-			View Projects
-		</a>
-		<a href="/about/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#EF476F] border border-[#EF476F]">
-			About Me
-		</a>
-		<a href="/Something else/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#26619C] border border-[#26619C]">
-			Something else
-		</a>
-		<a href="/Something else (coming soon)/" class="px-5 py-2 border-2 border-dotted border-[#26619C]">
-			Something even elser (coming soon)
-		</a>
-		</div>
-		<!-- <div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div> -->
-		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<!-- <ScrollGraphic
-			client:load
-			graphicSrc="/graphics/sticker.svg"
-			alt="Fun sticker"
-			>
-			<h2 class="text-3xl font-bold mb-4">Why our thing matters</h2>
-			<p class="text-slate-700 leading-relaxed">
-				This is a portfolio blurb. Make it long so you can scroll. Lorem ipsum
-				dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi
-				tristique senectus et netus et malesuada fames ac turpis egestas.
-			</p>
-		</ScrollGraphic> -->
-		<div class="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-gray-100 rounded-xl">
-			<!-- Left element (could be text, image, etc.) -->
-			<div class="flex-1 bg-white p-4 rounded-lg shadow">
-				<h2 class="text-xl font-semibold mb-2">Left Content</h2>
-				<p class="text-gray-700">
-				This could be text, an image, or any other media element.
-				</p>
-			</div>
-
-			<!-- Right element (could be text, image, etc.) -->
-			<div class="flex-1 bg-white p-4 rounded-lg shadow">
-				<h2 class="text-xl font-semibold mb-2">Right Content</h2>
-				<p class="text-gray-700">
-				On small screens, this block will stack below the first one.
-				</p>
+			<div class="mt-10 flex gap-4">
+				<a href="/projects/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#FFBA00] border border-[#FFBA00]">
+					View Projects
+				</a>
+				<a href="/about/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#EF476F] border border-[#EF476F]">
+					About Me
+				</a>
+				<a href="/Something else/" class="px-5 py-2 shadow-[4px_4px_0px_0px_#26619C] border border-[#26619C]">
+					Something else
+				</a>
+				<a href="/Something else (coming soon)/" class="px-5 py-2 border-2 border-dotted border-[#26619C]">
+					Something even elser (coming soon)
+				</a>
 			</div>
 		</div>
-		<!-- <TwoUp class="bg-gray-100 p-6 rounded-xl">
-			<Fragment slot="left">
-				<h2 class="text-xl font-semibold mb-2">Left Content</h2>
-				<p class="text-gray-700">Some text or even a React island later.</p>
-			</Fragment>
-
-			<Fragment slot="right">
-				<h2 class="text-xl font-semibold mb-2">Right Content</h2>
-				<p class="text-gray-700">This one could be an image, list, whatever.</p>
-			</Fragment>
-		</TwoUp> -->
-		<TwoUp class="bg-gray-100 p-6 rounded-xl">
-
-
-			<Fragment slot="left">
-				<!-- <ScrollInGraphic startOffsetPct={300}>
-				{/* this can be any graphic, e.g. an inline SVG */}
-				<div class="w-40 h-40 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
-					SVG / Graphic
-				</div>
-				</ScrollInGraphic> -->
-				<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
-			</Fragment>
-			<Fragment slot="right">
-				<h2 class="text-xl font-semibold mb-2">Some text block</h2>
-				<p class="text-gray-700">
-				This is the text side.
-				</p>
-			</Fragment>
-		</TwoUp>
-		<!-- <ScrollRevealSection
-		client:load
-		graphicSrc="/graphics/sticker.svg">
-		<h2 class="text-3xl font-bold mb-4">Scroll-linked section</h2>
-		<p class="text-slate-700 leading-relaxed">
-			This text stays where it is, the graphic lives beside it, and the graphic
-			scrolls in proportionally.
-		</p>
-		</ScrollRevealSection> -->
-		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<div style="height: 100vh; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<!-- <div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div>
-		<div style="height: 100vh; background: #eee; border-bottom: 1px solid #ccc;">
-			<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
-		</div> -->
 	</section>
+	<section id="reveal" class="relative" >
+		<div id="revealMask" class="pointer-events-none absolute inset-0 z-20 bg-black reveal-mask"></div>
+		<div class="sticky top-0 -z-10">
+			<PerlishPointClouds
+				client:load
+				foregroundColor="black"
+				backgroundColor="white"
+				maxProbabilityPeak={1}
+				minProbabilityPeak={0}
+				maxProbabilityTrough={0}
+				noiseScale={.6}
+				fieldSpeed={.05}
+				width="100vw"
+				height="100vh"
+				/>
+			</div>
+			<div class="py-20 px-(--pad) relative">
+
+			<div style="height: 50vh;">
+				<h2 style="text-align: center;">Filler Section</h2>
+			</div>
+			<TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6">
+			<!-- <TwoUp class="bg-gray-100 p-6"> -->
+				<Fragment slot="left">
+					<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
+				</Fragment>
+				<Fragment slot="right">
+					<h2 class="text-xl font-semibold mb-2">Some text block</h2>
+					<p class="text-gray-700">
+					This is the text side.
+					</p>
+				</Fragment>
+			</TwoUp>
+			<div style="height: 100vh; border-bottom: 1px solid #ccc;">
+				<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+			</div>
+			<div style="height: 100vh; border-bottom: 1px solid #ccc;">
+				<h2 style="text-align: center; padding-top: 40vh;">Filler Section</h2>
+			</div>
+		</div>
+			
+
+	</section>
+	<script>
+	(function () {
+		const hero = document.getElementById('hero');
+		const mask = document.getElementById('revealMask');
+		if (!hero || !mask) return;
+
+		let ticking = false;
+
+		function update() {
+		const heroHeight = hero!.getBoundingClientRect().height || hero!.offsetHeight || 1;
+		const y = window.scrollY || window.pageYOffset || 0;
+		// progress through the hero: 0 at top, 1 when scrolled past its height
+		const p = Math.max(0, Math.min(1, y / heroHeight));
+		mask!.style.opacity = String(1 - p);
+		ticking = false;
+		}
+
+		function onScroll() {
+		if (!ticking) {
+			ticking = true;
+			requestAnimationFrame(update);
+		}
+		}
+
+		update();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', update);
+	})();
+	</script>
 </Layout>

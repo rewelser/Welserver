@@ -1,33 +1,36 @@
-// StaticNoiseField.tsx
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+// PerlishPointClouds.tsx
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
 
-type StaticNoiseFieldProps = {
+type PerlishPointCloudsProps = {
   foregroundColor?: string;
   backgroundColor?: string;
-  /** max probability at noise peaks, 0..1 */
-  maxProbability?: number;
-  /** min probability at noise troughs, 0..1 */
-  minProbability?: number;
-  /** how fast the noise field moves */
+  /** max probability at noise peaks, 0..1 (brightest parts) */
+  maxProbabilityPeak?: number;
+  /** min probability at noise peaks, 0..1 (shoulder of blobs) */
+  minProbabilityPeak?: number;
+  /** max probability at noise troughs, 0..1 (darkest parts) */
+  maxProbabilityTrough?: number;
+  /** how fast the noise field morphs */
   fieldSpeed?: number;
-  /** scale of the noise field (bigger = chunkier blobs) */
+  /** scale of the noise field (smaller = bigger blobs) */
   noiseScale?: number;
   className?: string;
   width?: number | string;
   height?: number | string;
 };
 
-const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
-  foregroundColor = '#1e90ff',
-  backgroundColor = '#000000',
-  maxProbability = 0.8,
-  minProbability = 0.0,
+const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
+  foregroundColor = "#1e90ff",
+  backgroundColor = "#000000",
+  maxProbabilityPeak = 0.8,
+  minProbabilityPeak = 0.4,
+  maxProbabilityTrough = 0.02,
   fieldSpeed = 0.15,
   noiseScale = 2.5,
   className,
-  width = '100%',
-  height = '100%',
+  width = "100%",
+  height = "100%",
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -35,7 +38,6 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
 
   const makeColorVec3 = (hex: string) => {
     const c = new THREE.Color(hex);
-    // const c = new THREE.Color(hex).convertSRGBToLinear();
     return new THREE.Vector3(c.r, c.g, c.b);
   };
 
@@ -43,23 +45,30 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
+    // renderer
     const renderer = new THREE.WebGLRenderer({ antialias: false });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     rendererRef.current = renderer;
-    renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
+    // scene + cam + fullscreen quad
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const geometry = new THREE.PlaneGeometry(2, 2);
+
+    // initial colors
+    const fgVec = makeColorVec3(foregroundColor);
+    const bgVec = makeColorVec3(backgroundColor);
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0.0 },
         resolution: { value: new THREE.Vector2(1, 1) },
-        foreground: { value: makeColorVec3(foregroundColor) },
-        background: { value: makeColorVec3(backgroundColor) },
-        maxProb: { value: maxProbability },
-        minProb: { value: minProbability },
+        foreground: { value: fgVec },
+        background: { value: bgVec },
+        maxProbPeak: { value: maxProbabilityPeak },
+        minProbPeak: { value: minProbabilityPeak },
+        maxProbTrough: { value: maxProbabilityTrough },
         fieldSpeed: { value: fieldSpeed },
         noiseScale: { value: noiseScale },
       },
@@ -73,12 +82,13 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
         uniform vec2 resolution;
         uniform vec3 foreground;
         uniform vec3 background;
-        uniform float maxProb;
-        uniform float minProb;
+        uniform float maxProbPeak;
+        uniform float minProbPeak;
+        uniform float maxProbTrough;
         uniform float fieldSpeed;
         uniform float noiseScale;
 
-        // --- simplex noise 3D (same as before) ---
+        // --- simplex noise 3D ---
         vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
         vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
         vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -148,63 +158,95 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
                                         dot(p2,x2), dot(p3,x3) ) );
         }
 
-        float random(vec2 st) {
-          return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+        // better per-pixel hash
+        float hash21(vec2 p) {
+          p = floor(p);
+          vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+          p3 += dot(p3, p3.yzx + 33.33);
+          return fract((p3.x + p3.y) * p3.z);
         }
 
         void main() {
           vec2 uv = gl_FragCoord.xy / resolution.xy;
 
-          // build 3D noise coords
-          // uv * noiseScale = blob size
-          // time * fieldSpeed = how fast the noise morphs
-          float field = snoise(vec3(uv * noiseScale, time * fieldSpeed));
-          field = (field + 1.0) * 0.5; // -1..1 -> 0..1
+          float f1 = snoise(vec3(uv * noiseScale, time * fieldSpeed));
+          float f2 = snoise(vec3(uv * (noiseScale * 2.0), time * fieldSpeed * 1.7));
+          float field = mix(f1, f2, 0.35);
+          field = (field + 1.0) * 0.5; // 0..1
 
-          // map field -> probability
-          float prob = mix(minProb, maxProb, field);
+          // first, keep a dead-ish low zone
+          // how fast we leave trough
+          // float mid  = smoothstep(0.0, 0.4, field);
+          // float mid  = smoothstep(0.0, 0.6, field);
+          float mid  = smoothstep(0.0, 0.7, field);
+          // how fast we enter peak
+          // float high = smoothstep(0.6, 1.0, field);
+          // float high = smoothstep(0.45, 0.85, field);
+          // float nearHigh = smoothstep(0.25, 0.5, field); // lower than high
+          float high = smoothstep(0.35, 0.7, field);
+
+          // start from trough
+          float prob = maxProbTrough;
+          // add some mid-range (shoulder)
+          prob = mix(prob, minProbPeak, mid);
+          // prob = mix(prob, maxProbPeak * 0.9, nearHigh); // almost peak
+          // then add the real peak (core)
+          prob = mix(prob, maxProbPeak, high);
 
           // per-pixel random
-          float r = random(uv * resolution.xy); // scale helps decorrelate
+          float r = hash21(gl_FragCoord.xy);
 
           vec3 color = (r < prob) ? foreground : background;
+
+          // force-encode to sRGB so it matches hex
+          color = pow(color, vec3(1.0 / 2.2));
+
           gl_FragColor = vec4(color, 1.0);
         }
       `,
     });
+    material.toneMapped = false;
+    materialRef.current = material;
 
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
-    materialRef.current = material;
 
     const resize = () => {
       if (!container) return;
       const w =
-        typeof width === 'number'
+        typeof width === "number"
           ? width
           : container.clientWidth || window.innerWidth;
       const h =
-        typeof height === 'number'
+        typeof height === "number"
           ? height
           : container.clientHeight || window.innerHeight;
+
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(w, h, false);
-      material.uniforms.resolution.value.set(w, h);
+
+      // show at normal CSS size
+      const scale = 1; // try 2 or even 3
+      renderer.setSize(w * scale, h * scale, false);
+      renderer.domElement.style.width = `${w}px`;
+      renderer.domElement.style.height = `${h}px`;
+      renderer.domElement.style.imageRendering = "pixelated";
+      material.uniforms.resolution.value.set(w * scale, h * scale);
     };
 
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
 
-    let start = performance.now();
+    const start = performance.now();
     const animate = (now: number) => {
       const elapsed = (now - start) / 1000.0;
       material.uniforms.time.value = elapsed;
       renderer.render(scene, camera);
-      renderer.setAnimationLoop(animate);
     };
     renderer.setAnimationLoop(animate);
 
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       renderer.setAnimationLoop(null);
       geometry.dispose();
       material.dispose();
@@ -214,34 +256,38 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // reactively update uniforms
+  // reactive updates
   useEffect(() => {
     if (materialRef.current) {
-      materialRef.current.uniforms.foreground.value = makeColorVec3(
-        foregroundColor
-      );
+      materialRef.current.uniforms.foreground.value =
+        makeColorVec3(foregroundColor);
     }
   }, [foregroundColor]);
 
   useEffect(() => {
     if (materialRef.current) {
-      materialRef.current.uniforms.background.value = makeColorVec3(
-        backgroundColor
-      );
+      materialRef.current.uniforms.background.value =
+        makeColorVec3(backgroundColor);
     }
   }, [backgroundColor]);
 
   useEffect(() => {
     if (materialRef.current) {
-      materialRef.current.uniforms.maxProb.value = maxProbability;
+      materialRef.current.uniforms.maxProbPeak.value = maxProbabilityPeak;
     }
-  }, [maxProbability]);
+  }, [maxProbabilityPeak]);
 
   useEffect(() => {
     if (materialRef.current) {
-      materialRef.current.uniforms.minProb.value = minProbability;
+      materialRef.current.uniforms.minProbPeak.value = minProbabilityPeak;
     }
-  }, [minProbability]);
+  }, [minProbabilityPeak]);
+
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.maxProbTrough.value = maxProbabilityTrough;
+    }
+  }, [maxProbabilityTrough]);
 
   useEffect(() => {
     if (materialRef.current) {
@@ -259,9 +305,9 @@ const StaticNoiseField: React.FC<StaticNoiseFieldProps> = ({
     <div
       ref={containerRef}
       className={className}
-      style={{ width, height, display: 'block', position: 'relative' }}
+      style={{ width, height, display: "block", position: "relative" }}
     />
   );
 };
 
-export default StaticNoiseField;
+export default PerlishPointClouds;
