@@ -1,51 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import { VideoFrameSVG } from "../components/VideoFrameSVG";
 
 interface ScrollInGraphicProps {
-  /** Optional: path to an image/SVG (e.g., /graphics/sticker.svg) */
-  src?: string;
-
-  /** Optional: children, e.g., inline SVG JSX. Used if no videoSrc or src is provided. */
-  children?: React.ReactNode;
+  /** Whatever you want to scroll in: <svg>, <video>, etc. */
+  children: React.ReactNode;
 
   /** how far offscreen to start, in %, negative = from left, positive = from right */
   startOffsetPct?: number;
 
   /** max distance (in px) for the effect to complete */
   maxDistance?: number;
-
-  /**
-   * Optional: video source. If provided, this takes precedence over `src`
-   * and renders a VideoFrameSVG instead of a static <img>.
-   */
-  videoSrc?: string;
-
-  /**
-   * Optional: SVG/PNG path used as the mask for VideoFrameSVG
-   * (e.g. "/graphics/blutattoo-trimmed-black.svg").
-   * Required if `videoSrc` is provided.
-   */
-  maskSrc?: string;
-
-  /**
-   * Optional: visible top image for VideoFrameSVG (ink layer).
-   * Defaults to `maskSrc` if omitted.
-   */
-  inkSrc?: string;
-
-  /** Optional: extra classes for the inner graphic element */
-  innerClassName?: string;
 }
 
 const ScrollInGraphic: React.FC<ScrollInGraphicProps> = ({
-  src,
   children,
   startOffsetPct = -150, // start well off to the left
   maxDistance = 300,
-  videoSrc,
-  maskSrc,
-  inkSrc,
-  innerClassName,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [progress, setProgress] = useState(0); // 0 = offscreen, 1 = in place
@@ -69,7 +38,7 @@ const ScrollInGraphic: React.FC<ScrollInGraphicProps> = ({
       let p = 1 - distance / maxDistance;
       p = Math.max(0, Math.min(1, p));
 
-      // your existing retreat behavior
+      // your existing retreat behavior – unchanged
       setProgress(() => (distanceSigned >= 0 ? p : 1));
     };
 
@@ -84,51 +53,20 @@ const ScrollInGraphic: React.FC<ScrollInGraphicProps> = ({
     };
   }, [maxDistance]);
 
-  // interpolate translateX
+  // interpolate translateX – unchanged
   const translateX = ((1 - progress) * startOffsetPct).toFixed(2); // e.g. from -150% to 0%
-
-  // Decide what to render inside:
-  // 1) If videoSrc is provided (and maskSrc), render VideoFrameSVG
-  // 2) Else if src is provided, render <img>
-  // 3) Else, render children
-  const renderInner = () => {
-    if (videoSrc && maskSrc) {
-      return (
-        <div className={`w-full ${innerClassName ?? ""}`}>
-          <VideoFrameSVG
-            videoSrc={videoSrc}
-            maskSrc={maskSrc}
-            inkSrc={inkSrc}
-            className="w-full"
-          />
-        </div>
-      );
-    }
-
-    if (src) {
-      return (
-        <img
-          src={src}
-          alt="scroll graphic"
-          className={`max-w-full h-auto ${innerClassName ?? ""}`}
-        />
-      );
-    }
-
-    return children;
-  };
 
   return (
     <div
       ref={ref}
-      className="relative flex items-center justify-center overflow-visible"
+      className="relative flex items-center justify-center overflow-visible p-6"
       style={{
         transform: `translateX(${translateX}%)`,
         transition: "transform 0s", // scroll-tied
-        willChange: "transform",
+        // willChange: "transform",
       }}
     >
-      {renderInner()}
+      {children}
     </div>
   );
 };

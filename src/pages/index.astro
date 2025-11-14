@@ -1,18 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import TwoUp from "../components/TwoUp.astro";
-import ScrollInGraphic from "../components/ScrollInGraphic_2.tsx";
+import ScrollInGraphic from "../components/ScrollInGraphic.tsx";
 import PerlishPointClouds from '../components/PerlishPointClouds';
-import { VideoFrameSVG } from "../components/VideoFrameSVG";
-import { LogoZoomPOC } from "../components/ZoomSVG";
-
 ---
 
 <Layout title="Evan Welser – Portfolio" description="Engineer. Builder. Writer.">
-	<section id="hero" class="py-20 px-(--pad) bg-white">
+	<section id="hero" class="py-20 px-(--pad) bg-white bg-[url('/graphics/white-wall-background.jpg')] bg-cover bg-center shadow-heavy">
 		<div class="max-w-5xl mx-auto">
-			<h1 class="text-2xl md:text-8xl font-bold tracking-tight [text-shadow:1px_1px_0_#fff,-1px_1px_0_#fff,1px_-1px_0_#fff,-1px_-1px_0_#fff]">
-			Hi, I’m <span class="underline underline-offset-4">Evan Welser</span>.
+			<h1 class="text-2xl md:text-8xl font-bold tracking-tight">
+			Hi, I’m <span class="underline underline-offset-6 decoration-dotted">Evan Welser</span>.
 			</h1>
 			<p class="mt-4 max-w-prose leading-relaxed text-balance">
 			I build things with Java/Spring, React/TypeScript, and Python. This site is a
@@ -39,8 +36,8 @@ import { LogoZoomPOC } from "../components/ZoomSVG";
 		<div class="sticky top-0 -z-10 overflow-x-hidden">
 			<PerlishPointClouds
 				client:load
-				foregroundColor="black"
-				backgroundColor="white"
+				foregroundColor="white"
+				backgroundColor="black"
 				maxProbabilityPeak={1}
 				minProbabilityPeak={0}
 				maxProbabilityTrough={0}
@@ -48,13 +45,14 @@ import { LogoZoomPOC } from "../components/ZoomSVG";
 				fieldSpeed={.05}
 				width="100vw"
 				height="100vh"
-				/>
+			/>
 		</div>
-		<div class="py-20 px-(--pad) relative">
+		<!-- <div class="py-20 px-(--pad) relative"> -->
+		<div class="py-20 relative">
 
-			<div style="height: 50vh;">
+			<!-- <div style="height: 50vh;">
 				<h2 style="text-align: center;">Filler Section</h2>
-			</div>
+			</div> -->
 			<!-- <TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6">
 				<Fragment slot="left">
 					<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
@@ -67,17 +65,23 @@ import { LogoZoomPOC } from "../components/ZoomSVG";
 				</Fragment>
 			</TwoUp> -->
 			<!-- <TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6"> -->
-			<TwoUp class="bg-gray-100 p-6">
+			<TwoUp class="bg-gray-100">
 				<Fragment slot="left">
-					<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
+					<ScrollInGraphic client:load startOffsetPct={-100} >
+						<video
+							src="/videos/blutattoo.webm"
+							autoplay
+							muted
+							loop
+						/>
+					</ScrollInGraphic>
 				</Fragment>
 				<Fragment slot="right">
-					<video
-						src="/videos/blutattoo.webm"
-						autoplay
-						muted
-						loop
-					/>
+					<div class="">
+						<p class="outline-8 outline-offset-16 outline-dotted">
+							This is the website I made for BluTattoo Studio. Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum 
+						</p>
+					</div>
 				</Fragment>
 			</TwoUp>
 			<div style="height: 100vh; border-bottom: 1px solid #ccc;">

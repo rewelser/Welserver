@@ -185,6 +185,12 @@ const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
           // float nearHigh = smoothstep(0.25, 0.5, field); // lower than high
           float high = smoothstep(0.35, 0.7, field);
 
+          // ---- calm band near the top ----
+          // uv.y: 0.0 = bottom, 1.0 = top
+          // We want: bottom -> keep prob, top -> push prob toward trough
+          float calmMask = smoothstep(1.2, 1.8, uv.y);
+          // calmMask ≈ 0 below ~70% height, ≈ 1 near the very top
+
           // start from trough
           float prob = maxProbTrough;
           // add some mid-range (shoulder)
@@ -192,6 +198,11 @@ const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
           // prob = mix(prob, maxProbPeak * 0.9, nearHigh); // almost peak
           // then add the real peak (core)
           prob = mix(prob, maxProbPeak, high);
+
+          // ---- update prob per calm band ----
+          prob = mix(prob, maxProbTrough, calmMask);
+          // At bottom: prob ~ original
+          // At top: prob ~ maxProbTrough (very low), so mostly background pixels
 
           // per-pixel random
           float r = hash21(gl_FragCoord.xy);
