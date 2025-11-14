@@ -1,8 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import TwoUp from "../components/TwoUp.astro";
-import ScrollInGraphic from "../components/ScrollInGraphic.tsx";
+import ScrollInGraphic from "../components/ScrollInGraphic_2.tsx";
 import PerlishPointClouds from '../components/PerlishPointClouds';
+import { VideoFrameSVG } from "../components/VideoFrameSVG";
+import { LogoZoomPOC } from "../components/ZoomSVG";
+
 ---
 
 <Layout title="Evan Welser – Portfolio" description="Engineer. Builder. Writer.">
@@ -33,7 +36,7 @@ import PerlishPointClouds from '../components/PerlishPointClouds';
 	</section>
 	<section id="reveal" class="relative" >
 		<div id="revealMask" class="pointer-events-none absolute inset-0 z-20 bg-black reveal-mask"></div>
-		<div class="sticky top-0 -z-10">
+		<div class="sticky top-0 -z-10 overflow-x-hidden">
 			<PerlishPointClouds
 				client:load
 				foregroundColor="black"
@@ -46,14 +49,13 @@ import PerlishPointClouds from '../components/PerlishPointClouds';
 				width="100vw"
 				height="100vh"
 				/>
-			</div>
-			<div class="py-20 px-(--pad) relative">
+		</div>
+		<div class="py-20 px-(--pad) relative">
 
 			<div style="height: 50vh;">
 				<h2 style="text-align: center;">Filler Section</h2>
 			</div>
-			<TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6">
-			<!-- <TwoUp class="bg-gray-100 p-6"> -->
+			<!-- <TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6">
 				<Fragment slot="left">
 					<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
 				</Fragment>
@@ -62,6 +64,20 @@ import PerlishPointClouds from '../components/PerlishPointClouds';
 					<p class="text-gray-700">
 					This is the text side.
 					</p>
+				</Fragment>
+			</TwoUp> -->
+			<!-- <TwoUp class="bg-pink-400 p-6 relative after:bg-[url(/graphics/plus2.svg),url(/graphics/plus2.svg)] after:bg-repeat  after:absolute after:h-full after:w-full after:-top-6"> -->
+			<TwoUp class="bg-gray-100 p-6">
+				<Fragment slot="left">
+					<ScrollInGraphic client:load src="/graphics/sticker.svg" startOffsetPct={-160} />
+				</Fragment>
+				<Fragment slot="right">
+					<video
+						src="/videos/blutattoo.webm"
+						autoplay
+						muted
+						loop
+					/>
 				</Fragment>
 			</TwoUp>
 			<div style="height: 100vh; border-bottom: 1px solid #ccc;">
@@ -73,7 +89,7 @@ import PerlishPointClouds from '../components/PerlishPointClouds';
 		</div>
 			
 
-	</section>
+	</section >
 	<script>
 	(function () {
 		const hero = document.getElementById('hero');
