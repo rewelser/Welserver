@@ -186,10 +186,13 @@ const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
           float high = smoothstep(0.35, 0.7, field);
 
           // ---- calm band near the top ----
-          // uv.y: 0.0 = bottom, 1.0 = top
-          // We want: bottom -> keep prob, top -> push prob toward trough
-          float calmMask = smoothstep(1.2, 1.8, uv.y);
-          // calmMask ≈ 0 below ~70% height, ≈ 1 near the very top
+          // - bottom -> keep prob, top -> push prob toward trough
+          // - uv.y: 0.0 = bottom, 2.0 = top (for when renderer resolution is calced based off of css and not dpr (dpr = 2))
+          // float calmMask = smoothstep(1.2, 1.8, uv.y);
+          // float calmMask = step(0.99, uv.y); // hard cutoff
+
+          // - uv.y: 0.0 = bottom, 1.0 = top (for when renderer resolution is calced based off dpr (dpr = 2))
+          float calmMask = smoothstep(0.3, 0.9, uv.y);
 
           // start from trough
           float prob = maxProbTrough;
@@ -204,14 +207,30 @@ const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
           // At bottom: prob ~ original
           // At top: prob ~ maxProbTrough (very low), so mostly background pixels
 
-          // per-pixel random
+          // --- original color calc: per-pixel random ----
           float r = hash21(gl_FragCoord.xy);
-
           vec3 color = (r < prob) ? foreground : background;
+
+
+          // ---- other ways of calculating color ----
+          // - clamps prob; same value in R,G,B → grayscale
+          // float v = clamp(prob, 0.0, 1.0);
+          // vec3 color = vec3(v);
+          // - splits scene x-wise (or y-wise, if using y)
+          // float r = gl_FragCoord.x / resolution.x;
+          // vec3 color = (r < prob) ? foreground : background;
+          // -- considerations for other pages --
+          // float threshold = 0.5; // tweak this as you like
+          // - non-randomized, doesn't account for prob
+          // vec3 color = (field > threshold) ? foreground : background;
+          // - non-randomized, accounts for prob
+          // vec3 color = (prob > threshold) ? foreground : background;
 
           // force-encode to sRGB so it matches hex
           color = pow(color, vec3(1.0 / 2.2));
 
+          // ---- scene scale test ----
+          // color = vec3(calmMask);
           gl_FragColor = vec4(color, 1.0);
         }
       `,
@@ -242,7 +261,15 @@ const PerlishPointClouds: React.FC<PerlishPointCloudsProps> = ({
       renderer.domElement.style.width = `${w}px`;
       renderer.domElement.style.height = `${h}px`;
       renderer.domElement.style.imageRendering = "pixelated";
-      material.uniforms.resolution.value.set(w * scale, h * scale);
+
+      // CSS-ish dimensions, not accounting for device pixel ratio
+      // material.uniforms.resolution.value.set(w * scale, h * scale);
+      console.log("w: " + w);
+      console.log("h: " + h);
+      console.log("renderer.domElement.width: " + renderer.domElement.width);
+      console.log("renderer.domElement.height: " + renderer.domElement.height);
+
+      material.uniforms.resolution.value.set(renderer.domElement.width, renderer.domElement.height);
     };
 
     resize();
